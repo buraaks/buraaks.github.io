@@ -96,9 +96,10 @@ body {
 /* Shooting Star */
 .shooting-star {
     position: absolute;
-    height: 2px;
-    background: linear-gradient(90deg, white, transparent);
-    width: 100px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, white);
+    /* Head-first white head */
+    width: 120px;
     opacity: 0;
     pointer-events: none;
     animation: shoot var(--duration) linear infinite;
@@ -106,21 +107,21 @@ body {
 
 @keyframes shoot {
     0% {
-        transform: translateX(0) translateY(0) rotate(-45deg);
+        transform: translate(0, 0) rotate(45deg);
         opacity: 0;
     }
 
-    10% {
+    5% {
         opacity: 1;
     }
 
-    30% {
-        transform: translateX(500px) translateY(500px) rotate(-45deg);
+    15% {
+        transform: translate(600px, 600px) rotate(45deg);
         opacity: 0;
     }
 
     100% {
-        transform: translateX(500px) translateY(500px) rotate(-45deg);
+        transform: translate(600px, 600px) rotate(45deg);
         opacity: 0;
     }
 }
