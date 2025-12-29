@@ -1,56 +1,87 @@
+function openWindow(windowName) {
+    const mainInterface = document.getElementById('mainInterface');
+    const targetWindow = document.getElementById(`window-${windowName}`);
+
+    // Animate Main Interface Out
+    mainInterface.classList.add('hidden');
+
+    // Animate Window In
+    setTimeout(() => {
+        targetWindow.classList.add('active');
+    }, 200);
+}
+
+function closeWindow(windowName) {
+    const mainInterface = document.getElementById('mainInterface');
+    const targetWindow = document.getElementById(`window-${windowName}`);
+
+    // Animate Window Out
+    targetWindow.classList.remove('active');
+
+    // Animate Main Interface In
+    setTimeout(() => {
+        mainInterface.classList.remove('hidden');
+    }, 300);
+}
+
+// Interactive Title Animation
 document.addEventListener('DOMContentLoaded', () => {
-    // Mobile Menu Toggle
-    const hamburger = document.querySelector('.hamburger');
-    const navLinks = document.querySelector('.nav-links');
-    const links = document.querySelectorAll('.nav-links li');
+    const title = document.getElementById('hero-title');
+    const text = title.textContent;
+    title.innerHTML = ''; // Clear text
 
-    hamburger.addEventListener('click', () => {
-        navLinks.classList.toggle('active');
-        
-        // Hamburger Animation
-        hamburger.classList.toggle('toggle');
+    // Split text into spans
+    text.split('').forEach(char => {
+        const span = document.createElement('span');
+        if (char === ' ') {
+            span.classList.add('space');
+            span.innerHTML = '&nbsp;';
+        } else {
+            span.classList.add('char');
+            span.innerText = char;
+        }
+        title.appendChild(span);
     });
 
-    // Close mobile menu when a link is clicked
-    links.forEach(link => {
-        link.addEventListener('click', () => {
-            navLinks.classList.remove('active');
-            hamburger.classList.remove('toggle');
-        });
-    });
+    const chars = document.querySelectorAll('.hero-section h1 .char');
 
-    // Smooth Scrolling for Anchor Links (Optional, CSS scroll-behavior usually handles this but JS offers more control)
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
+    document.addEventListener('mousemove', (e) => {
+        // Prevent animation if a window is open
+        if (document.querySelector('.window-overlay.active')) {
+            chars.forEach(char => {
+                char.style.transform = 'translate(0, 0) scale(1)';
+                char.style.zIndex = 1;
             });
-        });
-    });
+            return;
+        }
 
-    // Scroll Animation (Fade In)
-    const observerOptions = {
-        threshold: 0.1
-    };
+        const mouseX = e.clientX;
+        const mouseY = e.clientY;
 
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-                observer.unobserve(entry.target);
+        chars.forEach(char => {
+            const rect = char.getBoundingClientRect();
+            const charX = rect.left + rect.width / 2;
+            const charY = rect.top + rect.height / 2;
+
+            const diffX = charX - mouseX;
+            const diffY = charY - mouseY;
+            const dist = Math.sqrt(diffX * diffX + diffY * diffY);
+            const maxDist = 200;
+
+            if (dist < maxDist) {
+                // Spherizing intensity
+                const intensity = Math.sin((1 - dist / maxDist) * Math.PI / 2);
+
+                const scale = 1 + (intensity * 0.2); // Set to 1.2x maximum scale
+                const translateX = diffX * intensity * 0.15;
+                const translateY = diffY * intensity * 0.15;
+
+                char.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+                char.style.zIndex = 100;
+            } else {
+                char.style.transform = 'translate(0, 0) scale(1)';
+                char.style.zIndex = 1;
             }
         });
-    }, observerOptions);
-
-    // Apply animation to sections and cards
-    const elementsToAnimate = document.querySelectorAll('.section-title, .about-text, .project-card, .contact-desc');
-    
-    elementsToAnimate.forEach(el => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(20px)';
-        el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
-        observer.observe(el);
     });
 });
