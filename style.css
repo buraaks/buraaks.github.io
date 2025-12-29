@@ -39,28 +39,43 @@ body {
 /* Background Effects */
 .background-effects {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: -5%;
+    left: -5%;
+    width: 110%;
+    height: 110%;
     z-index: 0;
     overflow: hidden;
     pointer-events: none;
-    animation: drift 60s infinite linear;
-    /* Super slow container drift */
+    transition: transform 0.2s ease-out;
+    /* For parallax */
 }
 
-@keyframes drift {
-    0% {
-        transform: scale(1) translate(0, 0);
+/* Particles Layer */
+.particles-layer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.particle {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.3;
+    animation: twinkle var(--duration) infinite ease-in-out;
+}
+
+@keyframes twinkle {
+
+    0%,
+    100% {
+        opacity: 0.1;
+        transform: scale(1);
     }
 
     50% {
-        transform: scale(1.05) translate(-1%, -1%);
-    }
-
-    100% {
-        transform: scale(1) translate(0, 0);
+        opacity: 0.5;
+        transform: scale(1.2);
     }
 }
 
@@ -68,17 +83,17 @@ body {
     position: absolute;
     border-radius: 50%;
     filter: blur(120px);
-    opacity: 0.2;
-    /* Even softer */
-    animation: float 25s infinite ease-in-out;
+    opacity: 0.15;
+    animation: float 30s infinite ease-in-out;
 }
 
 .orb-1 {
-    width: 70vh;
-    height: 70vh;
+    width: 80vh;
+    height: 80vh;
     background: radial-gradient(circle, var(--accent-color), transparent);
-    top: -15%;
-    left: -15%;
+    top: -10%;
+    left: -10%;
+    animation-duration: 40s;
 }
 
 .orb-2 {
@@ -87,7 +102,20 @@ body {
     background: radial-gradient(circle, #4f46e5, transparent);
     bottom: -15%;
     right: -15%;
-    animation-delay: -12s;
+    animation-delay: -15s;
+    animation-duration: 35s;
+}
+
+.orb-3 {
+    width: 40vh;
+    height: 40vh;
+    background: radial-gradient(circle, #ec4899, transparent);
+    /* Pinkish-Purple */
+    top: 50%;
+    left: 40%;
+    opacity: 0.1;
+    animation-delay: -5s;
+    animation-duration: 50s;
 }
 
 .grid-overlay {
@@ -97,9 +125,9 @@ body {
     background-image:
         linear-gradient(var(--glass-border) 1px, transparent 1px),
         linear-gradient(90deg, var(--glass-border) 1px, transparent 1px);
-    background-size: 60px 60px;
-    opacity: 0.02;
-    animation: pulseGrid 10s infinite ease-in-out;
+    background-size: 80px 80px;
+    opacity: 0.01;
+    animation: pulseGrid 8s infinite ease-in-out;
 }
 
 @keyframes pulseGrid {
@@ -107,10 +135,12 @@ body {
     0%,
     100% {
         opacity: 0.01;
+        transform: scale(1);
     }
 
     50% {
-        opacity: 0.03;
+        opacity: 0.02;
+        transform: scale(1.02);
     }
 }
 
@@ -122,11 +152,11 @@ body {
     }
 
     33% {
-        transform: translate(4vw, -4vh) rotate(5deg);
+        transform: translate(3vw, -5vh) rotate(10deg);
     }
 
     66% {
-        transform: translate(-2vw, 4vh) rotate(-5deg);
+        transform: translate(-3vw, 5vh) rotate(-10deg);
     }
 }
 

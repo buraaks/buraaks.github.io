@@ -44,8 +44,42 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const chars = document.querySelectorAll('.hero-section h1 .char');
+    const bgEffects = document.querySelector('.background-effects');
+
+    // Create Background Particles
+    const particlesContainer = document.getElementById('particles');
+    const particleCount = 50;
+
+    for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+
+        // Random position
+        const x = Math.random() * 100;
+        const y = Math.random() * 100;
+        const size = Math.random() * 3 + 1;
+        const duration = Math.random() * 3 + 2;
+        const delay = Math.random() * 5;
+
+        particle.style.left = `${x}%`;
+        particle.style.top = `${y}%`;
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.setProperty('--duration', `${duration}s`);
+        particle.style.animationDelay = `${delay}s`;
+
+        particlesContainer.appendChild(particle);
+    }
 
     document.addEventListener('mousemove', (e) => {
+        const mouseX = e.clientX;
+        const mouseY = e.clientY;
+
+        // Subtle Background Parallax
+        const moveX = (mouseX - window.innerWidth / 2) * -0.01;
+        const moveY = (mouseY - window.innerHeight / 2) * -0.01;
+        bgEffects.style.transform = `translate(${moveX}px, ${moveY}px)`;
+
         // Prevent animation if a window is open
         if (document.querySelector('.window-overlay.active')) {
             chars.forEach(char => {
@@ -54,9 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             return;
         }
-
-        const mouseX = e.clientX;
-        const mouseY = e.clientY;
 
         chars.forEach(char => {
             const rect = char.getBoundingClientRect();
@@ -85,3 +116,4 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
