@@ -79,12 +79,59 @@ body {
     }
 }
 
+/* Mouse Follower Light */
+.mouse-light {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s ease-out;
+    filter: blur(50px);
+}
+
+/* Shooting Star */
+.shooting-star {
+    position: absolute;
+    height: 2px;
+    background: linear-gradient(90deg, white, transparent);
+    width: 100px;
+    opacity: 0;
+    pointer-events: none;
+    animation: shoot var(--duration) linear infinite;
+}
+
+@keyframes shoot {
+    0% {
+        transform: translateX(0) translateY(0) rotate(-45deg);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    30% {
+        transform: translateX(500px) translateY(500px) rotate(-45deg);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(500px) translateY(500px) rotate(-45deg);
+        opacity: 0;
+    }
+}
+
 .glow-orb {
     position: absolute;
     border-radius: 50%;
     filter: blur(120px);
     opacity: 0.15;
-    animation: float 30s infinite ease-in-out;
+    animation: float 20s infinite ease-in-out;
+    /* Speeded up from 30s */
 }
 
 .orb-1 {
@@ -93,7 +140,8 @@ body {
     background: radial-gradient(circle, var(--accent-color), transparent);
     top: -10%;
     left: -10%;
-    animation-duration: 40s;
+    animation-duration: 25s;
+    /* Speeded up */
 }
 
 .orb-2 {
@@ -102,8 +150,9 @@ body {
     background: radial-gradient(circle, #4f46e5, transparent);
     bottom: -15%;
     right: -15%;
-    animation-delay: -15s;
-    animation-duration: 35s;
+    animation-delay: -10s;
+    animation-duration: 22s;
+    /* Speeded up */
 }
 
 .orb-3 {
@@ -111,11 +160,12 @@ body {
     height: 40vh;
     background: radial-gradient(circle, #ec4899, transparent);
     /* Pinkish-Purple */
-    top: 50%;
+    top: 30%;
     left: 40%;
-    opacity: 0.1;
+    opacity: 0.15;
     animation-delay: -5s;
-    animation-duration: 50s;
+    animation-duration: 30s;
+    /* Speeded up */
 }
 
 .grid-overlay {

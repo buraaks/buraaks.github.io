@@ -45,10 +45,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const chars = document.querySelectorAll('.hero-section h1 .char');
     const bgEffects = document.querySelector('.background-effects');
+    const mouseLight = document.getElementById('mouse-light');
 
     // Create Background Particles
     const particlesContainer = document.getElementById('particles');
-    const particleCount = 50;
+    const particleCount = 80; // Increased
 
     for (let i = 0; i < particleCount; i++) {
         const particle = document.createElement('div');
@@ -57,27 +58,41 @@ document.addEventListener('DOMContentLoaded', () => {
         // Random position
         const x = Math.random() * 100;
         const y = Math.random() * 100;
-        const size = Math.random() * 3 + 1;
+        const size = Math.random() * 2 + 1;
         const duration = Math.random() * 3 + 2;
-        const delay = Math.random() * 5;
 
         particle.style.left = `${x}%`;
         particle.style.top = `${y}%`;
         particle.style.width = `${size}px`;
         particle.style.height = `${size}px`;
         particle.style.setProperty('--duration', `${duration}s`);
-        particle.style.animationDelay = `${delay}s`;
+        particle.style.animationDelay = `${Math.random() * 5}s`;
 
         particlesContainer.appendChild(particle);
+    }
+
+    // Create Shooting Stars
+    for (let i = 0; i < 4; i++) {
+        const star = document.createElement('div');
+        star.classList.add('shooting-star');
+        star.style.top = `${Math.random() * 50}%`;
+        star.style.left = `${Math.random() * 80}%`;
+        star.style.setProperty('--duration', `${Math.random() * 3 + 7}s`);
+        star.style.animationDelay = `${Math.random() * 10}s`;
+        particlesContainer.appendChild(star);
     }
 
     document.addEventListener('mousemove', (e) => {
         const mouseX = e.clientX;
         const mouseY = e.clientY;
 
-        // Subtle Background Parallax
-        const moveX = (mouseX - window.innerWidth / 2) * -0.01;
-        const moveY = (mouseY - window.innerHeight / 2) * -0.01;
+        // Mouse light follow
+        mouseLight.style.left = `${mouseX}px`;
+        mouseLight.style.top = `${mouseY}px`;
+
+        // Subtle Background Parallax (Increased intensity slightly to 0.015)
+        const moveX = (mouseX - window.innerWidth / 2) * -0.015;
+        const moveY = (mouseY - window.innerHeight / 2) * -0.015;
         bgEffects.style.transform = `translate(${moveX}px, ${moveY}px)`;
 
         // Prevent animation if a window is open
