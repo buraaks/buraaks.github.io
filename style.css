@@ -584,46 +584,8 @@ body {
     color: var(--accent-glow);
 }
 
-/* Skills Window Content */
-.skills-container {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    margin-top: 1rem;
-}
 
-.skill-category h3 {
-    font-size: 1.1rem;
-    color: var(--text-secondary);
-    margin-bottom: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    border-bottom: 1px solid var(--glass-border);
-    padding-bottom: 0.5rem;
-}
 
-.skill-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.8rem;
-}
-
-.skill-tags span {
-    padding: 0.5rem 1rem;
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    border-radius: 8px;
-    font-size: 0.9rem;
-    color: var(--text-primary);
-    transition: all 0.3s ease;
-}
-
-.skill-tags span:hover {
-    background: var(--accent-color);
-    border-color: var(--accent-glow);
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3);
-}
 
 /* Tech Stack Marquee */
 .marquee-container {
