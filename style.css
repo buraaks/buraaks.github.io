@@ -679,72 +679,8 @@ body {
     letter-spacing: 2px;
 }
 
-/* Status Card */
-.status-card {
-    position: fixed;
-    bottom: 2rem;
-    left: 2rem;
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    backdrop-filter: blur(10px);
-    padding: 0.8rem 1.2rem;
-    border-radius: 50px;
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    z-index: 100;
-    transition: all 0.3s ease;
-}
 
-.status-card:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: scale(1.05);
-}
 
-.status-icon {
-    width: 10px;
-    height: 10px;
-    background: #10b981;
-    /* Green */
-    border-radius: 50%;
-    box-shadow: 0 0 10px #10b981;
-}
-
-.pulsate {
-    animation: pulsate 2s infinite;
-}
-
-@keyframes pulsate {
-    0% {
-        transform: scale(1);
-        opacity: 1;
-    }
-
-    50% {
-        transform: scale(1.5);
-        opacity: 0.5;
-    }
-
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-.status-text {
-    font-size: 0.9rem;
-    display: flex;
-    gap: 0.5rem;
-}
-
-.status-label {
-    color: var(--text-secondary);
-}
-
-.status-value {
-    color: var(--text-primary);
-    font-weight: 600;
-}
 
 /* Scrollbar */
 ::-webkit-scrollbar {
