@@ -334,17 +334,19 @@ body {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: transform 0.1s ease-out, background 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
     position: relative;
     overflow: hidden;
     color: white;
+    transform-style: preserve-3d;
+    will-change: transform;
 }
 
 .icon-box {
     font-size: 2.5rem;
     margin-bottom: 1rem;
     color: var(--accent-glow);
-    transition: transform 0.4s ease;
+    transition: transform 0.4s ease, color 0.4s ease;
 }
 
 .menu-tile span {
@@ -353,14 +355,14 @@ body {
 }
 
 .menu-tile:hover {
-    transform: translateY(-10px) rotateX(10deg);
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+    /* transform handled by JS */
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 15px 30px rgba(109, 40, 217, 0.3);
     border-color: var(--accent-glow);
 }
 
 .menu-tile:hover .icon-box {
-    transform: scale(1.2);
+    transform: translateZ(20px) scale(1.1);
     color: white;
 }
 

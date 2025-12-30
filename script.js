@@ -219,7 +219,33 @@ document.addEventListener('DOMContentLoaded', () => {
     updateGreeting();
     setInterval(updateClock, 1000);
 
+    // Dynamic 3D Tilt for Menu Buttons
+    const menuTiles = document.querySelectorAll('.menu-tile');
 
+    menuTiles.forEach(tile => {
+        tile.addEventListener('mousemove', (e) => {
+            const rect = tile.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+
+            // Calculate rotation based on cursor position
+            // Max rotation: 15deg
+            const rotateX = ((y - centerY) / centerY) * -15; // Invert Y so up tilts up
+            const rotateY = ((x - centerX) / centerX) * 15;
+
+            // Apply transform
+            // We adding scale to give it a "pop" feel
+            tile.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
+        });
+
+        tile.addEventListener('mouseleave', () => {
+            // Reset on leave
+            tile.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+        });
+    });
 
 });
 
