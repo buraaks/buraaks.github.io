@@ -20,6 +20,10 @@
 
 body {
     background-color: var(--bg-dark);
+    background-image: url('images/bg-main.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     color: var(--text-primary);
     overflow: hidden;
     /* CRITICAL: NO SCROLL */
@@ -88,9 +92,15 @@ body {
     border-radius: 50%;
     pointer-events: none;
     z-index: 1;
+    /* Use top/left 0 and transform for moving to avoid layout thrashing */
+    top: 0;
+    left: 0;
     transform: translate(-50%, -50%);
-    transition: transform 0.1s ease-out;
-    filter: blur(50px);
+    /* Initial, updated via JS */
+    will-change: transform;
+    /* Performance hint */
+    filter: blur(40px);
+    /* Reduced blur */
 }
 
 /* Shooting Star */
@@ -129,8 +139,12 @@ body {
 .glow-orb {
     position: absolute;
     border-radius: 50%;
-    filter: blur(120px);
-    opacity: 0.15;
+    filter: blur(80px);
+    /* Reduced blur radius for sharper, less muddy look */
+    opacity: 0.4;
+    /* Increased opacity slightly as they blend with image */
+    mix-blend-mode: screen;
+    /* Blend with background image */
     animation: float 20s infinite ease-in-out;
     /* Speeded up from 30s */
 }
@@ -181,6 +195,20 @@ body {
     animation: pulseGrid 8s infinite ease-in-out;
 }
 
+.noise-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0.03;
+    /* More subtle */
+    /* Higher baseFrequency (0.8) for finer grain */
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E");
+}
+
 @keyframes pulseGrid {
 
     0%,
@@ -222,6 +250,16 @@ body {
     margin-bottom: 2rem;
 }
 
+.greeting {
+    font-size: 1.2rem;
+    color: var(--accent-glow);
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    opacity: 0.8;
+}
+
 .hero-section h1 {
     font-size: 5rem;
     font-weight: 800;
@@ -245,6 +283,7 @@ body {
     /* Minimal base margin */
     color: white;
     position: relative;
+    /* Removed text-shadow if any, it's heavy */
 }
 
 .hero-section h1 span.space {
@@ -422,25 +461,53 @@ body {
 .project-card {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 1.5rem;
-    border-radius: 12px;
-    transition: transform 0.3s ease, background 0.3s ease;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
     text-decoration: none;
-    /* Remove underline */
     color: inherit;
-    /* Keep text color */
-    display: block;
-    /* Ensure it behaves like a block */
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
 }
 
 .project-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-8px);
     background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border-color: var(--accent-glow);
+}
+
+.project-image-wrapper {
+    width: 100%;
+    height: 160px;
+    overflow: hidden;
+    position: relative;
+}
+
+.project-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.project-card:hover .project-image-wrapper img {
+    transform: scale(1.1);
+}
+
+.project-content {
+    padding: 1.5rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .project-card h3 {
     color: var(--accent-glow);
     margin-bottom: 0.5rem;
+    font-size: 1.25rem;
 }
 
 .tags {
@@ -482,6 +549,186 @@ body {
 
 .social-link:hover {
     color: var(--accent-glow);
+}
+
+/* Skills Window Content */
+.skills-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-top: 1rem;
+}
+
+.skill-category h3 {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 0.5rem;
+}
+
+.skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+}
+
+.skill-tags span {
+    padding: 0.5rem 1rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+}
+
+.skill-tags span:hover {
+    background: var(--accent-color);
+    border-color: var(--accent-glow);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3);
+}
+
+/* Tech Stack Marquee */
+.marquee-container {
+    position: fixed;
+    bottom: 2rem;
+    width: 100%;
+    overflow: hidden;
+    padding: 1rem 0;
+    z-index: 5;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.marquee-content {
+    display: flex;
+    gap: 4rem;
+    animation: marquee 30s linear infinite;
+    white-space: nowrap;
+}
+
+@keyframes marquee {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.marquee-item {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-secondary);
+    letter-spacing: 2px;
+}
+
+/* Clock Style */
+.top-right-info {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    text-align: right;
+    z-index: 100;
+    font-family: 'Courier New', Courier, monospace;
+    color: var(--text-secondary);
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+#clock {
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+}
+
+/* Status Card */
+.status-card {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+    padding: 0.8rem 1.2rem;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    z-index: 100;
+    transition: all 0.3s ease;
+}
+
+.status-card:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.05);
+}
+
+.status-icon {
+    width: 10px;
+    height: 10px;
+    background: #10b981;
+    /* Green */
+    border-radius: 50%;
+    box-shadow: 0 0 10px #10b981;
+}
+
+.pulsate {
+    animation: pulsate 2s infinite;
+}
+
+@keyframes pulsate {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.5);
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.status-text {
+    font-size: 0.9rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.status-label {
+    color: var(--text-secondary);
+}
+
+.status-value {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0a0a0f;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }
 
 /* Responsive */

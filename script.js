@@ -43,13 +43,34 @@ document.addEventListener('DOMContentLoaded', () => {
         title.appendChild(span);
     });
 
+
+
+
+    // Typewriter Effect for Subtitle
+    const subtitle = document.querySelector('.subtitle');
+    const subtitleText = subtitle.textContent;
+    subtitle.textContent = '';
+
+    let charIndex = 0;
+    function typeWriter() {
+        if (charIndex < subtitleText.length) {
+            subtitle.textContent += subtitleText.charAt(charIndex);
+            charIndex++;
+            setTimeout(typeWriter, 50); // Typing speed
+        }
+    }
+
+    // Start typing after title animation slightly
+    setTimeout(typeWriter, 1000);
+
     const chars = document.querySelectorAll('.hero-section h1 .char');
     const bgEffects = document.querySelector('.background-effects');
     const mouseLight = document.getElementById('mouse-light');
 
     // Create Background Particles
     const particlesContainer = document.getElementById('particles');
-    const particleCount = 80; // Increased
+    // PERFORMANCE: Reduced particle count from 80 to 30
+    const particleCount = 30;
 
     for (let i = 0; i < particleCount; i++) {
         const particle = document.createElement('div');
@@ -82,53 +103,108 @@ document.addEventListener('DOMContentLoaded', () => {
         particlesContainer.appendChild(star);
     }
 
+    let isAnimationFrameScheduled = false;
+
     document.addEventListener('mousemove', (e) => {
+        if (isAnimationFrameScheduled) return;
+
+        isAnimationFrameScheduled = true;
+        requestAnimationFrame(() => {
+            handleMouseMove(e);
+            isAnimationFrameScheduled = false;
+        });
+    });
+
+    function handleMouseMove(e) {
         const mouseX = e.clientX;
         const mouseY = e.clientY;
 
         // Mouse light follow
-        mouseLight.style.left = `${mouseX}px`;
-        mouseLight.style.top = `${mouseY}px`;
+        mouseLight.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%)`;
+        // Removed separate left/top updates to rely on transform for better performance
 
-        // Subtle Background Parallax (Increased intensity slightly to 0.015)
-        const moveX = (mouseX - window.innerWidth / 2) * -0.015;
-        const moveY = (mouseY - window.innerHeight / 2) * -0.015;
+        // Subtle Background Parallax
+        const moveX = (mouseX - window.innerWidth / 2) * -0.01; // Reduced intensity
+        const moveY = (mouseY - window.innerHeight / 2) * -0.01;
         bgEffects.style.transform = `translate(${moveX}px, ${moveY}px)`;
 
         // Prevent animation if a window is open
         if (document.querySelector('.window-overlay.active')) {
+            // Reset characters if window opens
             chars.forEach(char => {
-                char.style.transform = 'translate(0, 0) scale(1)';
-                char.style.zIndex = 1;
+                if (char.style.transform !== '') {
+                    char.style.transform = '';
+                    char.style.zIndex = '';
+                }
             });
             return;
         }
 
         chars.forEach(char => {
             const rect = char.getBoundingClientRect();
+            // Optimization: Skip calculation if mouse is too far (simple box check first)
+            if (Math.abs(rect.left - mouseX) > 200 || Math.abs(rect.top - mouseY) > 200) {
+                if (char.style.transform !== '') {
+                    char.style.transform = '';
+                    char.style.zIndex = '';
+                }
+                return;
+            }
+
             const charX = rect.left + rect.width / 2;
             const charY = rect.top + rect.height / 2;
 
             const diffX = charX - mouseX;
             const diffY = charY - mouseY;
             const dist = Math.sqrt(diffX * diffX + diffY * diffY);
-            const maxDist = 200;
+            const maxDist = 150; // Reduced radius
 
             if (dist < maxDist) {
-                // Spherizing intensity
                 const intensity = Math.sin((1 - dist / maxDist) * Math.PI / 2);
-
-                const scale = 1 + (intensity * 0.2); // Set to 1.2x maximum scale
+                const scale = 1 + (intensity * 0.2);
                 const translateX = diffX * intensity * 0.15;
                 const translateY = diffY * intensity * 0.15;
 
                 char.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
                 char.style.zIndex = 100;
             } else {
-                char.style.transform = 'translate(0, 0) scale(1)';
-                char.style.zIndex = 1;
+                if (char.style.transform !== '') {
+                    char.style.transform = '';
+                    char.style.zIndex = '';
+                }
             }
         });
-    });
+    }
+
+    // Handle Clock
+    function updateClock() {
+        const clockElement = document.getElementById('clock');
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        clockElement.textContent = `${hours}:${minutes}:${seconds}`;
+    }
+
+    // Handle Dynamic Greeting
+    function updateGreeting() {
+        const greetingElement = document.getElementById('greeting');
+        const hour = new Date().getHours();
+        let greeting = "Merhaba";
+
+        if (hour >= 5 && hour < 12) greeting = "Günaydın";
+        else if (hour >= 12 && hour < 18) greeting = "İyi Günler";
+        else if (hour >= 18 && hour < 22) greeting = "İyi Akşamlar";
+        else greeting = "İyi Geceler";
+
+        greetingElement.textContent = greeting;
+    }
+
+    updateClock();
+    updateGreeting();
+    setInterval(updateClock, 1000);
+
+
+
 });
 
