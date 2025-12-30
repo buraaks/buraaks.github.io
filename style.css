@@ -301,8 +301,15 @@ body {
     justify-content: center;
     gap: 1rem;
     /* Reduced gap to bring menu closer to title */
-    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease, filter 0.6s ease;
     width: 100%;
+}
+
+.main-interface.hidden {
+    opacity: 0;
+    transform: scale(0.9);
+    filter: blur(10px);
+    pointer-events: none;
 }
 
 /* Menu Grid */
@@ -371,14 +378,17 @@ body {
     pointer-events: none;
     /* Initially pass-through */
     opacity: 0;
-    transition: opacity 0.4s ease;
+    transition: opacity 0.4s ease, backdrop-filter 0.4s ease;
+    perspective: 1500px;
+    /* Enable 3D space */
 }
 
 .window-overlay.active {
     pointer-events: auto;
     opacity: 1;
     background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(8px);
+    /* Animate blur in */
 }
 
 .window-box {
@@ -390,12 +400,35 @@ body {
     max-width: 90%;
     position: relative;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9);
-    transform: scale(0.5) translateY(50px);
-    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    /* Animation Start State */
+    opacity: 0;
+    transform: translate(var(--start-x, 0px), var(--start-y, 50px)) scale(var(--start-scale, 0.3)) rotateX(45deg);
+    /* Start tilted */
+    /* More elastic spring physics */
+    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
+    /* Snappier bezier */
+    will-change: transform, opacity;
+    transform-style: preserve-3d;
 }
 
 .window-overlay.active .window-box {
-    transform: scale(1) translateY(0);
+    opacity: 1;
+    transform: translate(0, 0) scale(1) rotateX(0deg);
+}
+
+/* Stagger content inside window */
+.window-content {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.4s ease;
+    transition-delay: 0.1s;
+    /* Wait for window to start opening */
+}
+
+.window-overlay.active .window-content {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .large-window {

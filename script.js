@@ -1,14 +1,29 @@
-function openWindow(windowName) {
+function openWindow(windowName, triggeringElement) {
     const mainInterface = document.getElementById('mainInterface');
     const targetWindow = document.getElementById(`window-${windowName}`);
+    const targetBox = targetWindow.querySelector('.window-box');
+
+    // Calculate Origin
+    if (triggeringElement) {
+        const rect = triggeringElement.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        // Window is centered by absolute positioning in overlayflex
+        // The overlay is 100vw/100vh. Center is window.innerWidth/2, window.innerHeight/2
+        const deltaX = centerX - window.innerWidth / 2;
+        const deltaY = centerY - window.innerHeight / 2;
+
+        targetBox.style.setProperty('--start-x', `${deltaX}px`);
+        targetBox.style.setProperty('--start-y', `${deltaY}px`);
+        targetBox.style.setProperty('--start-scale', '0.1'); // Start very small
+    }
 
     // Animate Main Interface Out
     mainInterface.classList.add('hidden');
 
-    // Animate Window In
-    setTimeout(() => {
-        targetWindow.classList.add('active');
-    }, 200);
+    // Animate Window In (Immediate start for overlap effect)
+    targetWindow.classList.add('active');
 }
 
 function closeWindow(windowName) {
