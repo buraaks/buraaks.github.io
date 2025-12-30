@@ -687,3 +687,14 @@ body {
         font-size: 2.5rem;
     }
 }
+
+/* Texture/Shard for Text Shatter Effect */
+.letter-shard {
+    position: absolute;
+    background: white;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+    opacity: 1;
+    pointer-events: none;
+    z-index: 1000;
+    border-radius: 2px;
+}

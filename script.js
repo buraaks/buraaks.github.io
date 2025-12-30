@@ -118,6 +118,124 @@ document.addEventListener('DOMContentLoaded', () => {
         particlesContainer.appendChild(star);
     }
 
+    // Hero Title Shatter Effect
+    chars.forEach(char => {
+        // Prevent interaction with spaces
+        if (char.classList.contains('space')) return;
+
+        char.style.cursor = 'pointer';
+
+        char.addEventListener('click', (e) => {
+            if (char.classList.contains('shattering')) return;
+
+            // Start Shatter
+            char.classList.add('shattering');
+            const originalTransform = char.style.transform;
+            const originalOpacity = char.style.opacity;
+
+            // Hide Original
+            char.style.opacity = '0';
+            char.style.transform = 'scale(0)';
+
+            // Create Shards
+            const rect = char.getBoundingClientRect();
+            const shardCount = 12;
+            const shards = [];
+
+            for (let i = 0; i < shardCount; i++) {
+                const shard = document.createElement('div');
+                shard.classList.add('letter-shard');
+                document.body.appendChild(shard);
+
+                // Initial Properties
+                const size = Math.random() * 5 + 3; // Random size 3-8px
+                shard.style.width = `${size}px`;
+                shard.style.height = `${size}px`;
+                // Position at center of char
+                const startX = rect.left + rect.width / 2;
+                const startY = rect.top + rect.height / 2;
+                shard.style.left = `${startX}px`;
+                shard.style.top = `${startY}px`;
+
+                // Calculate random destination
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 100 + 50; // Fly 50-150px
+                const destX = Math.cos(angle) * distance;
+                const destY = Math.sin(angle) * distance;
+                const rot = Math.random() * 720;
+
+                // Animate Out (Explode)
+                // Use WAAPI for better control
+                const animation = shard.animate([
+                    { transform: `translate(-50%, -50%) rotate(0deg) scale(1)`, opacity: 1 },
+                    { transform: `translate(calc(-50% + ${destX}px), calc(-50% + ${destY}px)) rotate(${rot}deg) scale(0)`, opacity: 0 }
+                ], {
+                    duration: 600,
+                    easing: 'cubic-bezier(0.25, 1, 0.5, 1)',
+                    fill: 'forwards'
+                });
+
+                shards.push({ element: shard, destX, destY, rot });
+            }
+
+            // Reassemble logic
+            setTimeout(() => {
+                // Remove outgoing shards and create new "returning" shards for better effect
+                // Or simply reverse the animation on new shards?
+                // Let's create new shards at the disconnected positions and fly them IN
+
+                shards.forEach(item => item.element.remove());
+
+                // Create returning shards
+                const returnShards = [];
+                for (let i = 0; i < shardCount; i++) {
+                    const shard = document.createElement('div');
+                    shard.classList.add('letter-shard');
+                    document.body.appendChild(shard);
+
+                    const oldData = shards[i];
+                    const size = Math.random() * 5 + 3;
+                    shard.style.width = `${size}px`;
+                    shard.style.height = `${size}px`;
+
+                    // Start at "exploded" position (roughly)
+                    const startX = rect.left + rect.width / 2 + oldData.destX;
+                    const startY = rect.top + rect.height / 2 + oldData.destY;
+
+                    shard.style.left = `${startX}px`;
+                    shard.style.top = `${startY}px`;
+
+                    // Animate In (Implode)
+                    // Move from current position to center
+                    shard.animate([
+                        { transform: `translate(-50%, -50%) rotate(${oldData.rot}deg) scale(0.5)`, opacity: 0 },
+                        { transform: `translate(-50%, -50%) rotate(0deg) scale(1)`, opacity: 1, offset: 0.8 },
+                        { transform: `translate(-50%, -50%)`, opacity: 0 } // Fade out at very end as char appears
+                    ], {
+                        duration: 800,
+                        easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+                        fill: 'forwards'
+                    }).onfinish = () => shard.remove();
+                }
+
+                // Show Character shortly after implosion starts
+                setTimeout(() => {
+                    char.style.transition = 'opacity 0.4s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                    char.style.opacity = '1';
+                    char.style.transform = 'scale(1)'; // Restore scale
+
+                    // Clean up classes after transition
+                    setTimeout(() => {
+                        char.classList.remove('shattering');
+                        char.style.transition = ''; // reset to allow mousemove effect
+                    }, 400);
+
+                }, 600); // Wait for shards to come close
+
+            }, 600); // Wait after explosion
+        });
+    });
+
     let isAnimationFrameScheduled = false;
 
     document.addEventListener('mousemove', (e) => {
