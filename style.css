@@ -623,6 +623,7 @@ body {
     font-weight: 800;
     color: var(--text-secondary);
     letter-spacing: 2px;
+    flex-shrink: 0;
 }
 
 /* Clock Style */
@@ -685,6 +686,19 @@ body {
 
     .hero-section h1 {
         font-size: 2.5rem;
+    }
+
+    /* Marquee Fixes for Mobile */
+    .marquee-container {
+        bottom: 1rem;
+    }
+
+    .marquee-content {
+        gap: 2rem;
+    }
+
+    .marquee-item {
+        font-size: 1rem;
     }
 }
 
